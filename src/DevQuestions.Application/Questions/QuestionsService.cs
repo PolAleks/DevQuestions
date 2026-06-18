@@ -1,4 +1,6 @@
-﻿using DevQuestions.Contracts.Questions;
+﻿using DevQuestions.Application.Extensions;
+using DevQuestions.Application.Questions.Fails.Exceptions;
+using DevQuestions.Contracts.Questions;
 using DevQuestions.Domain.Question;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
@@ -26,14 +28,14 @@ public class QuestionsService : IQuestionsService
         var validationResult = await _validator.ValidateAsync(questionDto, cancellationToken);
         if (!validationResult.IsValid)
         {
-            throw new ValidationException(validationResult.Errors);
+            throw new QuestionValidationException(validationResult.ToErrors());
         }
 
         // Валидация бизнес логики
         int openUserQuestionsCount = await _questionsRepository.GetOpenUserQuestionsAsync(questionDto.UserId, cancellationToken);
         if (openUserQuestionsCount > 3)
         {
-            throw new Exception("Превышено максимальное количество открытых вопросов");
+            throw new ToManyQuestionException();
         }
 
         // Создание сущности Question

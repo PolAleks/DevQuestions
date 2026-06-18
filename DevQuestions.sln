@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevQuestions.Application", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevQuestions.Infrastructure.Postgres", "src\DevQuestions.Infrastructure.Postgres\DevQuestions.Infrastructure.Postgres.csproj", "{2F5D8F27-F130-4435-A364-F55493B4304F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "src\Shared\Shared.csproj", "{45B54567-DA47-4CC9-AD61-13FEB343D583}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,18 @@ Global
 		{2F5D8F27-F130-4435-A364-F55493B4304F}.Release|x64.Build.0 = Release|Any CPU
 		{2F5D8F27-F130-4435-A364-F55493B4304F}.Release|x86.ActiveCfg = Release|Any CPU
 		{2F5D8F27-F130-4435-A364-F55493B4304F}.Release|x86.Build.0 = Release|Any CPU
+		{45B54567-DA47-4CC9-AD61-13FEB343D583}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45B54567-DA47-4CC9-AD61-13FEB343D583}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45B54567-DA47-4CC9-AD61-13FEB343D583}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{45B54567-DA47-4CC9-AD61-13FEB343D583}.Debug|x64.Build.0 = Debug|Any CPU
+		{45B54567-DA47-4CC9-AD61-13FEB343D583}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{45B54567-DA47-4CC9-AD61-13FEB343D583}.Debug|x86.Build.0 = Debug|Any CPU
+		{45B54567-DA47-4CC9-AD61-13FEB343D583}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45B54567-DA47-4CC9-AD61-13FEB343D583}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45B54567-DA47-4CC9-AD61-13FEB343D583}.Release|x64.ActiveCfg = Release|Any CPU
+		{45B54567-DA47-4CC9-AD61-13FEB343D583}.Release|x64.Build.0 = Release|Any CPU
+		{45B54567-DA47-4CC9-AD61-13FEB343D583}.Release|x86.ActiveCfg = Release|Any CPU
+		{45B54567-DA47-4CC9-AD61-13FEB343D583}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -115,5 +129,6 @@ Global
 		{AE6D3603-F4BE-4586-B568-0E4077B8655B} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{15902251-7713-4B72-824A-9D784103161D} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{2F5D8F27-F130-4435-A364-F55493B4304F} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{45B54567-DA47-4CC9-AD61-13FEB343D583} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 EndGlobal
