@@ -8,6 +8,8 @@ public record Error
     
     public string Message { get; }
 
+    public static Error NONE => new(string.Empty, string.Empty, ErrorType.NONE);
+    
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public ErrorType Type { get; }
 
@@ -21,6 +23,7 @@ public record Error
         Type = type;
         InvalidField = invalidField;
     }
+
 
     public static Error NotFound(string? code, string message, Guid? id) 
         => new(code ?? "record.not.found", message, ErrorType.NOT_FOUND);
@@ -37,6 +40,10 @@ public record Error
 
 public enum ErrorType
 {
+    /// <summary>
+    /// Нет ошибки
+    /// </summary>
+    NONE,
     /// <summary>
     /// Ошибка валидации
     /// </summary>
