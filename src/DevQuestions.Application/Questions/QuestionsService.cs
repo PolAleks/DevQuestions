@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using DevQuestions.Application.Extensions;
+using DevQuestions.Application.Questions.Fails;
 using DevQuestions.Application.Questions.Fails.Exceptions;
 using DevQuestions.Contracts.Questions;
 using DevQuestions.Domain.Question;
@@ -37,7 +38,7 @@ public class QuestionsService : IQuestionsService
         int openUserQuestionsCount = await _questionsRepository.GetOpenUserQuestionsAsync(questionDto.UserId, cancellationToken);
         if (openUserQuestionsCount > 3)
         {
-            throw new ToManyQuestionException();
+            return Errors.Question.ToManyQuestions().ToFailure();
         }
 
         // Создание сущности Question
