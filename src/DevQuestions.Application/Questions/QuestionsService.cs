@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
+using DevQuestions.Application.Database;
 using DevQuestions.Application.Extensions;
 using DevQuestions.Application.Questions.Fails;
-using DevQuestions.Application.Questions.Fails.Exceptions;
 using DevQuestions.Contracts.Questions;
 using DevQuestions.Domain.Question;
 using FluentValidation;
@@ -14,21 +14,28 @@ public class QuestionsService : IQuestionsService
 {
     private readonly IQuestionsRepository _questionsRepository;
     private readonly ILogger<QuestionsService> _logger;
-    private readonly IValidator<CreateQuestionDto> _validator;
+    private readonly IValidator<CreateQuestionDto> _createQuestionDtoValidator;
+    private readonly IValidator<AddAnswerDto> _addAnswerDtoValidator;
+    private readonly ITransactionManager _transactionManager;
 
     public QuestionsService(IQuestionsRepository questionsRepository,
-                            IValidator<CreateQuestionDto> validator,
+                            IValidator<CreateQuestionDto> createQuestionDtoValidator,
+                            IValidator<AddAnswerDto> addAnswerDtoValidator,
+                            ITransactionManager transactionManager,
                             ILogger<QuestionsService> logger)
     {
         _questionsRepository = questionsRepository;
-        _validator = validator;
+        _createQuestionDtoValidator = createQuestionDtoValidator;
+        _addAnswerDtoValidator = addAnswerDtoValidator;
+        _transactionManager = transactionManager;
         _logger = logger;
     }
+
 
     public async Task<Result<Guid, Failure>> Create(CreateQuestionDto questionDto, CancellationToken cancellationToken)
     {
         // Валидация входных данных
-        var validationResult = await _validator.ValidateAsync(questionDto, cancellationToken);
+        var validationResult = await _createQuestionDtoValidator.ValidateAsync(questionDto, cancellationToken);
         if (!validationResult.IsValid)
         {
             return validationResult.ToErrors();
@@ -38,7 +45,7 @@ public class QuestionsService : IQuestionsService
         int openUserQuestionsCount = await _questionsRepository.GetOpenUserQuestionsAsync(questionDto.UserId, cancellationToken);
         if (openUserQuestionsCount > 3)
         {
-            return Errors.Question.ToManyQuestions().ToFailure();
+            return Errors.Questions.ToManyQuestions().ToFailure();
         }
 
         // Создание сущности Question
@@ -60,5 +67,48 @@ public class QuestionsService : IQuestionsService
         _logger.LogInformation("Question created with id {questionId} successfully", questionId);
 
         return questionId;
+    }
+
+    public async Task<Result<Guid, Failure>> AddAnswer(Guid questionId, AddAnswerDto answerDto, CancellationToken cancellationToken)
+    {
+        // Валидация данных
+        var validationResult = await _addAnswerDtoValidator.ValidateAsync(answerDto, cancellationToken);
+        if (!validationResult.IsValid)
+        {
+            return validationResult.ToErrors();
+        }
+
+        var transaction = await _transactionManager.BeginTransactionAsync(cancellationToken);
+
+        var questionResult = await _questionsRepository.GetByIdAsync(questionId, cancellationToken);
+        if (questionResult.IsFailure)
+        {
+            return questionResult.Error;
+        }
+
+        var question = questionResult.Value;
+
+        var answer = new Answer(Guid.NewGuid(), answerDto.UserId, answerDto.Text, questionId);
+
+        question.Answers.Add(answer);
+
+        await _questionsRepository.SaveAsync(question, cancellationToken);
+        
+        transaction.Commit();
+
+        _logger.LogInformation("Answer added to question with id {questionId} successfully", questionId);
+        
+        return answer.Id;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is QuestionsService service &&
+               EqualityComparer<ITransactionManager>.Default.Equals(_transactionManager, service._transactionManager);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(_transactionManager);
     }
 }
