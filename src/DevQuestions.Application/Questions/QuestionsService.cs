@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using DevQuestions.Application.Communication;
 using DevQuestions.Application.Database;
 using DevQuestions.Application.Extensions;
 using DevQuestions.Application.Questions.Fails;
@@ -13,21 +14,24 @@ namespace DevQuestions.Application.Questions;
 public class QuestionsService : IQuestionsService
 {
     private readonly IQuestionsRepository _questionsRepository;
-    private readonly ILogger<QuestionsService> _logger;
     private readonly IValidator<CreateQuestionDto> _createQuestionDtoValidator;
     private readonly IValidator<AddAnswerDto> _addAnswerDtoValidator;
     private readonly ITransactionManager _transactionManager;
+    private readonly IUserCommunicationService _userCommunicationService;
+    private readonly ILogger<QuestionsService> _logger;
 
     public QuestionsService(IQuestionsRepository questionsRepository,
                             IValidator<CreateQuestionDto> createQuestionDtoValidator,
                             IValidator<AddAnswerDto> addAnswerDtoValidator,
                             ITransactionManager transactionManager,
+                            IUserCommunicationService userCommunicationService,
                             ILogger<QuestionsService> logger)
     {
         _questionsRepository = questionsRepository;
         _createQuestionDtoValidator = createQuestionDtoValidator;
         _addAnswerDtoValidator = addAnswerDtoValidator;
         _transactionManager = transactionManager;
+        _userCommunicationService = userCommunicationService;
         _logger = logger;
     }
 
@@ -71,11 +75,23 @@ public class QuestionsService : IQuestionsService
 
     public async Task<Result<Guid, Failure>> AddAnswer(Guid questionId, AddAnswerDto answerDto, CancellationToken cancellationToken)
     {
-        // Валидация данных
+        // Валидация входных данных
         var validationResult = await _addAnswerDtoValidator.ValidateAsync(answerDto, cancellationToken);
         if (!validationResult.IsValid)
         {
             return validationResult.ToErrors();
+        }
+
+        // Проверка рейтинга пользователя
+        var userRatingResult = await _userCommunicationService.GetUserRatingAsync(answerDto.UserId, cancellationToken);
+        if (userRatingResult.IsFailure)
+        {
+            return userRatingResult.Error;
+        }
+
+        if(userRatingResult.Value <= 0)
+        {
+            return Errors.Questions.LowRating().ToFailure();
         }
 
         var transaction = await _transactionManager.BeginTransactionAsync(cancellationToken);
@@ -93,22 +109,11 @@ public class QuestionsService : IQuestionsService
         question.Answers.Add(answer);
 
         await _questionsRepository.SaveAsync(question, cancellationToken);
-        
+
         transaction.Commit();
 
         _logger.LogInformation("Answer added to question with id {questionId} successfully", questionId);
-        
+
         return answer.Id;
-    }
-
-    public override bool Equals(object? obj)
-    {
-        return obj is QuestionsService service &&
-               EqualityComparer<ITransactionManager>.Default.Equals(_transactionManager, service._transactionManager);
-    }
-
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(_transactionManager);
     }
 }
