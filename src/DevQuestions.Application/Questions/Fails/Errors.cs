@@ -4,7 +4,15 @@ namespace DevQuestions.Application.Questions.Fails;
 
 public partial class Errors
 {
-    public static class Question
+    public static class General
+    {
+        public static Error NotFound(Guid id) => Error.Failure(
+            code: "record.not.found",
+            message: $"Запись по id - {id} не найдена."
+        );
+    }
+    
+    public static class Questions
     {
         public static Error ToManyQuestions() => Error.Failure(
                 code: "to.many.questions",
