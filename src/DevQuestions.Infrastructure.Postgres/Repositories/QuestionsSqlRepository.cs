@@ -1,7 +1,9 @@
+using CSharpFunctionalExtensions;
 using Dapper;
 using DevQuestions.Application.Database;
 using DevQuestions.Application.Questions;
 using DevQuestions.Domain.Question;
+using Shared;
 
 namespace DevQuestions.Infrastructure.Postgres.Repositories;
 
@@ -42,7 +44,7 @@ public class QuestionsSqlRepository : IQuestionsRepository
         throw new NotImplementedException();
     }
 
-    public async Task<Question?> GetByIdAsync(Guid questionId, CancellationToken cancellationToken)
+    public async Task<Result<Question, Failure>> GetByIdAsync(Guid questionId, CancellationToken cancellationToken) 
     {
         throw new NotImplementedException();
     }

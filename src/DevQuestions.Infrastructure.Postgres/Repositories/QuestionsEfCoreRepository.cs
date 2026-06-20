@@ -1,6 +1,9 @@
+using CSharpFunctionalExtensions;
 using DevQuestions.Application.Questions;
+using DevQuestions.Application.Questions.Fails;
 using DevQuestions.Domain.Question;
 using Microsoft.EntityFrameworkCore;
+using Shared;
 
 namespace DevQuestions.Infrastructure.Postgres.Repositories;
 
@@ -25,12 +28,17 @@ public class QuestionsEfCoreRepository : IQuestionsRepository
         throw new NotImplementedException();
     }
 
-    public async Task<Question?> GetByIdAsync(Guid questionId, CancellationToken cancellationToken)
+    public async Task<Result<Question, Failure>> GetByIdAsync(Guid questionId, CancellationToken cancellationToken) 
     {
         var question = await _dbContext.Questions
             .Include(q => q.Answers)
             .Include(q => q.Solution)
             .FirstOrDefaultAsync(q => q.Id == questionId, cancellationToken: cancellationToken);
+
+        if (question is null)
+        {
+            return Errors.General.NotFound(questionId).ToFailure();
+        }
 
         return question;
     }
