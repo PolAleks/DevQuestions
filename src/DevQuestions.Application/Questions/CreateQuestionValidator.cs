@@ -16,5 +16,5 @@ public class CreateQuestionValidator : AbstractValidator<CreateQuestionDto>
             .MaximumLength(5000).WithMessage("Тело вопроса не должно превышать 5000 символов");
 
         RuleFor(x => x.UserId).NotEmpty();
-    }    
+    }
 }
