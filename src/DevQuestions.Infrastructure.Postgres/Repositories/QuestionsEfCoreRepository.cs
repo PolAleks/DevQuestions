@@ -48,8 +48,11 @@ public class QuestionsEfCoreRepository : IQuestionsRepository
         throw new NotImplementedException();
     }
 
-    public async Task SaveAsync(Question question, CancellationToken cancellationToken)
+    public async Task<Guid> SaveAsync(Question question, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        _dbContext.Questions.Attach(question);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return question.Id;
     }
 }

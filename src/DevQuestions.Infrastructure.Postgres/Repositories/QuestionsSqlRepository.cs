@@ -54,7 +54,7 @@ public class QuestionsSqlRepository : IQuestionsRepository
         throw new NotImplementedException();
     }
 
-    public async Task SaveAsync(Question question, CancellationToken cancellationToken)
+    public async Task<Guid> SaveAsync(Question question, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
