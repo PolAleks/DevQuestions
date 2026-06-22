@@ -2,7 +2,7 @@ using CSharpFunctionalExtensions;
 using DevQuestions.Application.Abstractions;
 using DevQuestions.Application.Extensions;
 using DevQuestions.Application.Questions.Fails;
-using DevQuestions.Contracts.Questions;
+using DevQuestions.Contracts.Questions.Dtos;
 using DevQuestions.Domain.Question;
 using FluentValidation;
 using Microsoft.Extensions.Logging;

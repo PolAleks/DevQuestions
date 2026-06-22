@@ -1,4 +1,4 @@
-using DevQuestions.Contracts.Questions;
+using DevQuestions.Contracts.Questions.Dtos;
 using FluentValidation;
 
 namespace DevQuestions.Application.Questions.AddAnswer;
