@@ -15,7 +15,5 @@ public interface IQuestionsRepository
 
     Task<Result<Question, Failure>> GetByIdAsync(Guid questionId, CancellationToken cancellationToken);
 
-    Task<(IReadOnlyList<Question>, long)> GetQuestionsWithFiltersAsync(GetQuestionsWithFiltersCommand command, CancellationToken cancellationToken);
-
     Task<int> GetOpenUserQuestionsAsync(Guid userId, CancellationToken cancellationToken);
 }

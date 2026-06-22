@@ -56,9 +56,4 @@ public class QuestionsEfCoreRepository : IQuestionsRepository
 
         return question.Id;
     }
-
-    Task<(IReadOnlyList<Question>, long)> IQuestionsRepository.GetQuestionsWithFiltersAsync(GetQuestionsWithFiltersCommand command, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
 }

@@ -59,9 +59,4 @@ public class QuestionsSqlRepository : IQuestionsRepository
     {
         throw new NotImplementedException();
     }
-
-    Task<(IReadOnlyList<Question>, long)> IQuestionsRepository.GetQuestionsWithFiltersAsync(GetQuestionsWithFiltersCommand command, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
 }
