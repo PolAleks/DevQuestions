@@ -1,4 +1,6 @@
-using DevQuestions.Application.Questions;
+using DevQuestions.Application.Abstractions;
+using DevQuestions.Application.Questions.AddAnswer;
+using DevQuestions.Application.Questions.CreateQuestion;
 using DevQuestions.Contracts.Questions;
 using DevQuestions.Presenters.ResponseExtensions;
 using Microsoft.AspNetCore.Mvc;
@@ -9,18 +11,13 @@ namespace DevQuestions.Presenters.Questions;
 [Route("[controller]")]
 public class QuestionsController : ControllerBase
 {
-    private readonly IQuestionsService _questionsService;
-
-    public QuestionsController(IQuestionsService questionsService)
-    {
-        _questionsService = questionsService;
-    }
-
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateQuestionDto request,
+    public async Task<IActionResult> Create([FromServices] ICommandHandler<Guid, CreateQuestionCommand> handler,
+                                            [FromBody] CreateQuestionDto request,
                                             CancellationToken cancellationToken)
     {
-        var result = await _questionsService.Create(request, cancellationToken);
+        var command = new CreateQuestionCommand(request);
+        var result = await handler.Handle(command, cancellationToken);
 
         return result.IsSuccess ? Ok(result.Value) : result.Error.ToResponse();
     }
@@ -63,10 +60,12 @@ public class QuestionsController : ControllerBase
     }
 
     [HttpPost("{questionId:guid}/answers")]
-    public async Task<IActionResult> AddAnswer([FromRoute] Guid questionId,
-                                               [FromBody] AddAnswerDto request,
+    public async Task<IActionResult> AddAnswer([FromServices] ICommandHandler<Guid, AddAnswerCommand> handler,
+                                               [FromRoute] Guid questionId, [FromBody] AddAnswerDto request,
                                                CancellationToken cancellationToken)
     {
-        return Ok("Answer added");
+        var command = new AddAnswerCommand(questionId, request);
+        var result = await handler.Handle(command, cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : result.Error.ToResponse();
     }
 }

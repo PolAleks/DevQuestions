@@ -1,4 +1,7 @@
+using DevQuestions.Application.Abstractions;
 using DevQuestions.Application.Questions;
+using DevQuestions.Application.Questions.AddAnswer;
+using DevQuestions.Application.Questions.CreateQuestion;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,7 +12,21 @@ public static class DependencyInjection
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
-        services.AddScoped<IQuestionsService, QuestionsService>();
+
+        // Отключили IQuestionsService так как перешли на работу через обработчики команд
+        // services.AddScoped<IQuestionsService, QuestionsService>();
+
+        // Способ 1 - регистрируем конкретные обработчики для команд
+        // services.AddScoped<ICommandHandler<Guid, CreateQuestionCommand>, CreateQuestionHandler>();
+        // services.AddScoped<ICommandHandler<Guid, AddAnswerCommand>, AddAnswerHandler>();
+
+        // Способ 2 - регистрируем обработчики команд c помощью nuget пакета Scrutor
+        var assembly = typeof(DependencyInjection).Assembly;
+        services.Scan(scan => scan.FromAssemblies(assembly)
+            .AddClasses(classes => classes.AssignableToAny(typeof(ICommandHandler<,>), typeof(ICommandHandler<>)))
+            .AsImplementedInterfaces()
+            .WithScopedLifetime());
+
         return services;
     }
 }

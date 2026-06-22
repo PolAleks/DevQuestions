@@ -89,7 +89,7 @@ public class QuestionsService : IQuestionsService
             return userRatingResult.Error;
         }
 
-        if(userRatingResult.Value <= 0)
+        if (userRatingResult.Value <= 0)
         {
             return Errors.Questions.LowRating().ToFailure();
         }
