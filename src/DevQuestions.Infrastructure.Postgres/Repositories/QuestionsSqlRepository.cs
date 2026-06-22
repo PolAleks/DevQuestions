@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using Dapper;
 using DevQuestions.Application.Database;
 using DevQuestions.Application.Questions;
+using DevQuestions.Application.Questions.Features.GetQuestionsWithFilters;
 using DevQuestions.Domain.Question;
 using Shared;
 
@@ -55,6 +56,11 @@ public class QuestionsSqlRepository : IQuestionsRepository
     }
 
     public async Task<Guid> SaveAsync(Question question, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<(IReadOnlyList<Question>, long)> IQuestionsRepository.GetQuestionsWithFiltersAsync(GetQuestionsWithFiltersCommand command, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

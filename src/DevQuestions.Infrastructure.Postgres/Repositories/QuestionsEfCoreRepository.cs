@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using DevQuestions.Application.Questions;
 using DevQuestions.Application.Questions.Fails;
+using DevQuestions.Application.Questions.Features.GetQuestionsWithFilters;
 using DevQuestions.Domain.Question;
 using Microsoft.EntityFrameworkCore;
 using Shared;
@@ -54,5 +55,10 @@ public class QuestionsEfCoreRepository : IQuestionsRepository
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return question.Id;
+    }
+
+    Task<(IReadOnlyList<Question>, long)> IQuestionsRepository.GetQuestionsWithFiltersAsync(GetQuestionsWithFiltersCommand command, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
 }

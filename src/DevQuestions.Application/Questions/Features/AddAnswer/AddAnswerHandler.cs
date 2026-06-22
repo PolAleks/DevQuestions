@@ -10,7 +10,7 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Shared;
 
-namespace DevQuestions.Application.Questions.AddAnswer;
+namespace DevQuestions.Application.Questions.Features.AddAnswer;
 
 public class AddAnswerHandler : ICommandHandler<Guid, AddAnswerCommand>
 {
