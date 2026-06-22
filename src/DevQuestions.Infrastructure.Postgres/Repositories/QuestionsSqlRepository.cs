@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using Dapper;
 using DevQuestions.Application.Database;
 using DevQuestions.Application.Questions;
+using DevQuestions.Application.Questions.Features.GetQuestionsWithFilters;
 using DevQuestions.Domain.Question;
 using Shared;
 

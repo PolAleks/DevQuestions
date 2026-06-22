@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using DevQuestions.Application.Questions;
 using DevQuestions.Application.Questions.Fails;
+using DevQuestions.Application.Questions.Features.GetQuestionsWithFilters;
 using DevQuestions.Domain.Question;
 using Microsoft.EntityFrameworkCore;
 using Shared;
