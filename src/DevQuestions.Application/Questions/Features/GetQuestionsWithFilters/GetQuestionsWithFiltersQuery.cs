@@ -3,4 +3,4 @@ using DevQuestions.Contracts.Questions.Dtos;
 
 namespace DevQuestions.Application.Questions.Features.GetQuestionsWithFilters;
 
-public record GetQuestionsWithFiltersCommand(GetQuestionDto GetQuestionDto) : ICommand;
+public record GetQuestionsWithFiltersQuery(GetQuestionDto GetQuestionDto) : IQuery;

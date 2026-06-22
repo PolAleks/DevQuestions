@@ -6,11 +6,10 @@ using DevQuestions.Contracts.Questions.Dtos;
 using DevQuestions.Contracts.Questions.Responses;
 using DevQuestions.Domain.Question;
 using Microsoft.EntityFrameworkCore;
-using Shared;
 
 namespace DevQuestions.Application.Questions.Features.GetQuestionsWithFilters;
 
-public class GetQuestionsWithFilters : ICommandHandler<QuestionsResponse, GetQuestionsWithFiltersCommand>
+public class GetQuestionsWithFilters : IQueryHandler<QuestionsResponse, GetQuestionsWithFiltersQuery>
 {
     private readonly IFilesProvider _filesProvider;
     private readonly ITagsRepository _tagsRepository;
@@ -25,12 +24,12 @@ public class GetQuestionsWithFilters : ICommandHandler<QuestionsResponse, GetQue
         _questionDbContext = questionDbContext;
     }
 
-    public async Task<Result<QuestionsResponse, Failure>> Handle(GetQuestionsWithFiltersCommand command, CancellationToken cancellationToken)
+    public async Task<QuestionsResponse> Handle(GetQuestionsWithFiltersQuery query, CancellationToken cancellationToken)
     {
         var questions = await _questionDbContext.ReadQuestions
             .Include(q => q.Solution)
-            .Skip(command.GetQuestionDto.Page * command.GetQuestionDto.PageSize)
-            .Take(command.GetQuestionDto.PageSize)
+            .Skip(query.GetQuestionDto.Page * query.GetQuestionDto.PageSize)
+            .Take(query.GetQuestionDto.PageSize)
             .ToListAsync(cancellationToken);
 
         var count = await _questionDbContext.ReadQuestions.LongCountAsync(cancellationToken);

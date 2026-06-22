@@ -1,7 +1,4 @@
 using DevQuestions.Application.Abstractions;
-using DevQuestions.Application.Questions;
-using DevQuestions.Application.Questions.AddAnswer;
-using DevQuestions.Application.Questions.CreateQuestion;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,6 +21,11 @@ public static class DependencyInjection
         var assembly = typeof(DependencyInjection).Assembly;
         services.Scan(scan => scan.FromAssemblies(assembly)
             .AddClasses(classes => classes.AssignableToAny(typeof(ICommandHandler<,>), typeof(ICommandHandler<>)))
+            .AsImplementedInterfaces()
+            .WithScopedLifetime());
+
+        services.Scan(scan => scan.FromAssemblies(assembly)
+            .AddClasses(classes => classes.AssignableTo(typeof(IQueryHandler<,>)))
             .AsImplementedInterfaces()
             .WithScopedLifetime());
 

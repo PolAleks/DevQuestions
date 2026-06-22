@@ -1,5 +1,4 @@
 using CSharpFunctionalExtensions;
-using DevQuestions.Application.Questions.Features.GetQuestionsWithFilters;
 using DevQuestions.Domain.Question;
 using Shared;
 

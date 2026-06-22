@@ -25,14 +25,14 @@ public class QuestionsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get([FromServices] ICommandHandler<QuestionsResponse, GetQuestionsWithFiltersCommand> handler,
+    public async Task<IActionResult> Get([FromServices] IQueryHandler<QuestionsResponse, GetQuestionsWithFiltersQuery> handler,
                                          [FromQuery] GetQuestionDto request,
                                          CancellationToken cancellationToken)
     {
-        var command = new GetQuestionsWithFiltersCommand(request);
-        var result = await handler.Handle(command, cancellationToken);
+        var query = new GetQuestionsWithFiltersQuery(request);
+        var result = await handler.Handle(query, cancellationToken);
 
-        return result.IsSuccess ? Ok(result.Value) : result.Error.ToResponse();
+        return Ok(result);
     }
 
     [HttpGet("{questionId:guid}")]
